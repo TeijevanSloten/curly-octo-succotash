@@ -6,32 +6,32 @@ public class Application {
 
     public static void main(String[] args) {
         List<String> list = new ArrayList<>();
-//        list.add("sometext");
+        list.add("sometext");
 
-        String o = (String) getValue(list)
+        Integer result = getValue(list)
                 .map(String::toUpperCase)
-                .map(o1 -> ((String) o1).substring(4))
+                .map(s -> s.charAt(0))
+                .map(character -> (int) character)
                 .get();
-        System.out.println(o);
+        System.out.println(result);
 
     }
 
     private static Option<String> getValue(List<String> list) {
-        return list.isEmpty() ? new None<>(): new Some<>(list.get(0));
+        return list.isEmpty() ? new None<>() : new Some<>(list.get(0));
     }
 
 }
 
 interface Option<T> {
-
-    Option<?> map(Function<T, ?> consumer);
+    <U> Option<U> map(Function<T, U> consumer);
     T get();
 }
 
 class None<T> implements Option<T> {
 
     @Override
-    public Option<?> map(Function function) {
+    public Option map(Function function) {
         return this;
     }
 
@@ -49,7 +49,7 @@ class Some<T> implements Option<T> {
     }
 
     @Override
-    public Option<?> map(Function<T, ?> function) {
+    public <U> Option<U> map(Function<T, U> function) {
         return new Some<>(function.apply(value));
     }
 
